@@ -2,194 +2,246 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>점메추 🍱</title>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
+/* ══ TOKENS ══ */
 :root {
   --orange:      #FF5722;
   --orange-dark: #D84315;
   --orange-pale: #FFF3EE;
   --orange-mid:  #FFCCBC;
   --white:       #FFFFFF;
-  --gray-100:    #F5F5F5;
-  --gray-200:    #E8E8E8;
-  --gray-400:    #BDBDBD;
-  --gray-600:    #757575;
-  --gray-800:    #424242;
-  --text:        #1A1A1A;
-  --r-sm: 10px; --r-md: 14px; --r-lg: 20px;
+  --g100: #F5F5F5; --g200: #E8E8E8;
+  --g400: #BDBDBD; --g600: #757575; --g800: #424242;
+  --text: #1A1A1A;
+  --r-sm: clamp(8px,2vw,10px);
+  --r-md: clamp(12px,3vw,14px);
+  --r-lg: clamp(16px,4vw,20px);
+
+  /* 슬롯 핵심 치수 — JS와 반드시 일치 */
+  --item-h: clamp(56px, 10vh, 80px);
+  --win-h:  calc(var(--item-h) * 3);
 }
+
+/* ══ RESET ══ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
+html { height: 100%; height: 100dvh; }
 body {
   font-family: 'Noto Sans KR', sans-serif;
   background: #FAFAFA;
-  display: flex;
-  justify-content: center;
-  min-height: 100%;
+  height: 100%; height: 100dvh;
+  display: flex; justify-content: center;
   -webkit-font-smoothing: antialiased;
+  overflow: hidden; /* body 자체는 스크롤 없음 */
 }
+
+/* ══ APP SHELL ══ */
 #app {
-  width: 100%; max-width: 430px;
-  min-height: 100vh; min-height: 100dvh;
+  width: 100%; max-width: 480px;
+  height: 100%; height: 100dvh;
   background: var(--white);
   display: flex; flex-direction: column;
-  box-shadow: 0 0 40px rgba(0,0,0,.08);
+  box-shadow: 0 0 40px rgba(0,0,0,.1);
+  overflow: hidden; /* 각 screen이 자체 스크롤 */
+  position: relative;
+}
+
+/* ══ SCREENS ══ */
+.screen {
+  display: none; flex-direction: column;
+  /* 화면 전체 높이를 차지 */
+  position: absolute; inset: 0;
   overflow: hidden;
 }
-.screen { display: none; flex-direction: column; flex: 1; }
 .screen.active { display: flex; }
 
-/* ── TOP BAR ── */
+/* ══ TOP BAR ══ */
 .top-bar {
   background: var(--orange);
-  height: 56px; padding: 0 20px;
+  height: clamp(48px, 7vh, 60px);
+  padding: 0 clamp(12px,4vw,20px);
   display: flex; align-items: center; justify-content: center;
   position: relative; flex-shrink: 0;
 }
-.top-bar-title { font-family: 'Jua', sans-serif; font-size: 18px; color: #fff; letter-spacing: 1px; }
-.back-btn {
-  position: absolute; left: 12px;
-  width: 36px; height: 36px;
-  background: rgba(255,255,255,.18); border: none; border-radius: 9px;
-  color: #fff; font-size: 18px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .15s;
+.top-bar-title {
+  font-family: 'Jua', sans-serif;
+  font-size: clamp(15px,4vw,18px);
+  color: #fff; letter-spacing: 1px;
 }
-.back-btn:hover { background: rgba(255,255,255,.28); }
+.back-btn {
+  position: absolute; left: clamp(8px,3vw,12px);
+  width: clamp(32px,8vw,38px); height: clamp(32px,8vw,38px);
+  background: rgba(255,255,255,.18); border: none;
+  border-radius: clamp(7px,2vw,10px);
+  color: #fff; font-size: clamp(15px,4vw,18px); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s; -webkit-tap-highlight-color: transparent;
+}
+.back-btn:active { background: rgba(255,255,255,.32); }
 
-/* ══════════════════════
-   SCREEN 1: LANDING
-══════════════════════ */
-#screen-landing { background: var(--orange); justify-content: space-between; }
+/* ══════════════════════════════
+   SCREEN 1 : LANDING
+   hero(flex:1) + cta(고정)
+══════════════════════════════ */
+#screen-landing { background: var(--orange); }
+
 .landing-hero {
-  flex: 1; display: flex; flex-direction: column;
+  flex: 1; min-height: 0;
+  display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 48px 32px 32px; gap: 14px;
+  padding: clamp(24px,6vh,48px) clamp(20px,6vw,32px) clamp(16px,4vh,28px);
+  gap: clamp(8px,2vh,14px);
 }
 .hero-icon {
-  font-size: 80px; line-height: 1;
+  font-size: clamp(52px,14vw,80px); line-height: 1;
   animation: float 3.5s ease-in-out infinite;
-  filter: drop-shadow(0 8px 20px rgba(0,0,0,.2));
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,.2));
 }
 @keyframes float {
   0%,100% { transform: translateY(0) rotate(-3deg); }
-  50%     { transform: translateY(-14px) rotate(3deg); }
+  50%     { transform: translateY(-10px) rotate(3deg); }
 }
 .hero-title {
-  font-family: 'Jua', sans-serif; font-size: 56px;
+  font-family: 'Jua', sans-serif;
+  font-size: clamp(40px,11vw,60px);
   color: #fff; letter-spacing: -2px;
-  text-shadow: 0 4px 12px rgba(0,0,0,.2);
+  text-shadow: 0 4px 12px rgba(0,0,0,.2); line-height: 1;
 }
 .hero-badge {
   background: rgba(255,255,255,.2); color: #fff;
-  font-size: 13px; font-weight: 700;
-  padding: 6px 18px; border-radius: 100px;
+  font-size: clamp(11px,3vw,14px); font-weight: 700;
+  padding: clamp(4px,1vh,7px) clamp(12px,4vw,18px); border-radius: 100px;
+  text-align: center;
 }
+
+/* 하단 CTA 카드 — 고정 높이 아닌 내용 기반 */
 .landing-cta {
-  background: var(--white); border-radius: 28px 28px 0 0;
-  padding: 28px 24px 40px;
-  display: flex; flex-direction: column; gap: 12px;
+  background: var(--white); border-radius: 24px 24px 0 0;
+  padding: clamp(20px,4vh,28px) clamp(16px,5vw,24px) clamp(24px,5vh,40px);
+  display: flex; flex-direction: column; gap: clamp(8px,2vh,12px);
   box-shadow: 0 -4px 24px rgba(0,0,0,.08);
+  flex-shrink: 0;
 }
-.landing-cta-hint { font-size: 13px; color: var(--gray-600); font-weight: 500; text-align: center; }
-.btn-cta {
+.landing-cta-hint {
+  font-size: clamp(11px,3vw,13px); color: var(--g600);
+  font-weight: 500; text-align: center;
+}
+
+/* ══ 공통 버튼 ══ */
+.btn-primary {
   background: var(--orange); color: #fff;
-  font-family: 'Jua', sans-serif; font-size: 20px; letter-spacing: 1.5px;
-  border: none; border-radius: var(--r-md); padding: 18px;
+  font-family: 'Jua', sans-serif;
+  font-size: clamp(16px,4.5vw,20px); letter-spacing: 1.5px;
+  border: none; border-radius: var(--r-md);
+  padding: clamp(14px,3.5vh,18px) 0;
   width: 100%; cursor: pointer;
   box-shadow: 0 4px 20px rgba(255,87,34,.4);
   transition: background .15s, transform .1s;
-}
-.btn-cta:hover  { background: var(--orange-dark); transform: translateY(-1px); }
-.btn-cta:active { transform: translateY(1px); }
-.btn-ghost {
-  background: none; border: 1.5px solid var(--gray-200);
-  color: var(--gray-600); font-family: 'Noto Sans KR', sans-serif;
-  font-size: 14px; font-weight: 700;
-  border-radius: var(--r-md); padding: 14px;
-  width: 100%; cursor: pointer;
-  transition: all .15s;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-}
-.btn-ghost:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
-
-/* ══════════════════════
-   SCREEN 2: FILTER
-══════════════════════ */
-#screen-filter { background: var(--white); }
-.filter-scroll {
-  flex: 1; overflow-y: auto;
-  padding: 20px 20px 0;
-  display: flex; flex-direction: column; gap: 20px;
-}
-.section-label { font-size: 11px; font-weight: 700; color: var(--gray-400); letter-spacing: 2px; text-transform: uppercase; }
-.section-title { font-size: 17px; font-weight: 700; color: var(--text); margin-top: 2px; }
-.category-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
-.cat-btn {
-  background: var(--white); border: 1.5px solid var(--gray-200);
-  border-radius: var(--r-md); padding: 16px 8px 14px;
-  cursor: pointer; display: flex; flex-direction: column;
-  align-items: center; gap: 6px;
-  transition: all .18s; position: relative; user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
-.cat-btn .cat-emoji { font-size: 28px; line-height: 1; }
-.cat-btn .cat-name  { font-size: 13px; font-weight: 700; color: var(--text); }
-.cat-btn:hover { border-color: var(--orange); background: var(--orange-pale); }
-.cat-btn.excluded { background: var(--gray-100); border-color: var(--gray-200); opacity: .5; }
-.cat-btn.excluded .cat-name  { color: var(--gray-600); text-decoration: line-through; }
+.btn-primary:active { background: var(--orange-dark); transform: scale(.98); }
+.btn-primary:disabled { background: var(--g400); box-shadow: none; cursor: not-allowed; transform: none; }
+
+.btn-ghost {
+  background: none; border: 1.5px solid var(--g200);
+  color: var(--g600); font-family: 'Noto Sans KR', sans-serif;
+  font-size: clamp(12px,3.5vw,14px); font-weight: 700;
+  border-radius: var(--r-md); padding: clamp(11px,2.8vh,14px) 0;
+  width: 100%; cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-ghost:active { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+
+/* ══════════════════════════════
+   SCREEN 2 : FILTER
+   스크롤 가능한 중앙 + 고정 하단
+══════════════════════════════ */
+#screen-filter { background: var(--white); }
+
+.filter-scroll {
+  flex: 1; min-height: 0;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: clamp(14px,3vh,20px) clamp(14px,4vw,20px) 8px;
+  display: flex; flex-direction: column; gap: clamp(14px,3vh,20px);
+}
+.section-label {
+  font-size: clamp(9px,2.5vw,11px); font-weight: 700;
+  color: var(--g400); letter-spacing: 2px; text-transform: uppercase;
+}
+.section-title {
+  font-size: clamp(14px,4vw,17px); font-weight: 700;
+  color: var(--text); margin-top: 2px;
+}
+.category-grid {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: clamp(6px,2vw,10px);
+}
+/* 화면 좁으면 3열 */
+@media (max-width: 320px) { .category-grid { grid-template-columns: repeat(3,1fr); } }
+
+.cat-btn {
+  background: var(--white); border: 1.5px solid var(--g200);
+  border-radius: var(--r-md);
+  padding: clamp(10px,2.5vh,16px) 4px clamp(8px,2vh,12px);
+  cursor: pointer; display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  transition: all .15s; position: relative; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.cat-btn .cat-emoji { font-size: clamp(20px,5.5vw,26px); line-height: 1; }
+.cat-btn .cat-name  { font-size: clamp(10px,2.8vw,13px); font-weight: 700; color: var(--text); }
+.cat-btn:active { border-color: var(--orange); background: var(--orange-pale); }
+.cat-btn.excluded { background: var(--g100); border-color: var(--g200); opacity: .5; }
+.cat-btn.excluded .cat-name  { color: var(--g600); text-decoration: line-through; }
 .cat-btn.excluded .cat-emoji { filter: grayscale(1); }
 .cat-btn.excluded::after {
-  content: '✕'; position: absolute; top: 6px; right: 8px;
-  font-size: 11px; font-weight: 900; color: var(--gray-400);
+  content: '✕'; position: absolute; top: 4px; right: 6px;
+  font-size: 10px; font-weight: 900; color: var(--g400);
 }
+
 .tag-area {
   background: var(--orange-pale); border: 1.5px solid var(--orange-mid);
-  border-radius: var(--r-md); padding: 14px 16px;
+  border-radius: var(--r-md);
+  padding: clamp(10px,2.5vh,14px) clamp(12px,3vw,16px);
   display: flex; flex-wrap: wrap; gap: 6px;
-  min-height: 52px; align-items: center;
+  min-height: 44px; align-items: center;
 }
 .active-tag {
   background: var(--orange); color: #fff;
-  font-size: 12px; font-weight: 700;
-  padding: 4px 12px; border-radius: 100px;
+  font-size: clamp(10px,2.8vw,12px); font-weight: 700;
+  padding: 3px 10px; border-radius: 100px;
 }
-.tag-empty { font-size: 13px; color: var(--orange); font-weight: 700; }
-.filter-footer {
-  padding: 16px 20px 32px; background: var(--white);
-  border-top: 1px solid var(--gray-100); flex-shrink: 0;
-}
-.btn-spin {
-  background: var(--orange); color: #fff;
-  font-family: 'Jua', sans-serif; font-size: 19px; letter-spacing: 1.5px;
-  border: none; border-radius: var(--r-md); padding: 18px;
-  width: 100%; cursor: pointer;
-  box-shadow: 0 4px 20px rgba(255,87,34,.4);
-  transition: background .15s, transform .1s;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.btn-spin:hover  { background: var(--orange-dark); transform: translateY(-1px); }
-.btn-spin:active { transform: translateY(1px); }
-.btn-spin:disabled { background: var(--gray-400); box-shadow: none; cursor: not-allowed; transform: none; }
+.tag-empty { font-size: clamp(11px,3vw,13px); color: var(--orange); font-weight: 700; }
 
-/* ══════════════════════
-   SCREEN 3: SLOT
-══════════════════════ */
+.filter-footer {
+  flex-shrink: 0;
+  padding: clamp(10px,2.5vh,16px) clamp(14px,4vw,20px) clamp(16px,4vh,28px);
+  background: var(--white); border-top: 1px solid var(--g100);
+}
+
+/* ══════════════════════════════
+   SCREEN 3 : SLOT
+   슬롯 화면 = 스크롤 없이 flex로 꽉 채움
+══════════════════════════════ */
 #screen-slot { background: var(--white); }
-.slot-scroll {
-  flex: 1; overflow-y: auto;
-  padding: 20px 20px 32px;
+
+.slot-body {
+  flex: 1; min-height: 0;
   display: flex; flex-direction: column;
-  align-items: center; gap: 16px;
+  padding: clamp(10px,2.5vh,16px) clamp(14px,4vw,20px) clamp(12px,3vh,20px);
+  gap: clamp(8px,2vh,14px);
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
 }
 
 /* 슬롯 머신 카드 */
 .slot-machine {
-  width: 100%; background: var(--gray-100);
-  border-radius: var(--r-lg); padding: 18px 16px 16px;
-  border: 2px solid var(--gray-200);
+  flex-shrink: 0;
+  background: var(--g100); border-radius: var(--r-lg);
+  padding: clamp(12px,3vh,18px) clamp(12px,3vw,16px) clamp(10px,2.5vh,14px);
+  border: 2px solid var(--g200);
   box-shadow: 0 2px 12px rgba(0,0,0,.06);
   position: relative; overflow: hidden;
 }
@@ -197,138 +249,153 @@ body {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
   background: linear-gradient(90deg, var(--orange), #FF8A65, var(--orange));
 }
-.slot-dots { display: flex; align-items: center; gap: 6px; margin-bottom: 14px; }
-.dot { width: 10px; height: 10px; border-radius: 50%; }
+.slot-dots { display: flex; align-items: center; gap: 5px; margin-bottom: clamp(8px,2vh,14px); }
+.dot { width: 9px; height: 9px; border-radius: 50%; }
 .dot-r{background:#FF5F57;} .dot-y{background:#FFBD2E;} .dot-g{background:#28CA41;}
-.slot-dots-label { margin-left: 8px; font-size: 10px; font-weight: 700; color: var(--gray-400); letter-spacing: 3px; }
+.slot-dots-label { margin-left: 6px; font-size: 9px; font-weight: 700; color: var(--g400); letter-spacing: 3px; }
 
-/* ── 릴 컨테이너 ── */
-.reels-wrap { display: flex; gap: 10px; }
-
-/*
-  핵심 구조:
-  - .reel-window: overflow:hidden 창 (높이 = ITEM_H * 3 = 240px, 가운데 1칸이 선택)
-  - .reel-strip:  실제 아이템 리스트, translateY로 스크롤
-  - 중앙 = window 높이/2 - ITEM_H/2 = 120 - 40 = 80px 오프셋
+/* ── 릴 ──
+   .reel-window 높이 = var(--win-h) = item-h × 3
+   JS는 이 값을 동적으로 읽어서 계산
 */
+.reels-wrap { display: flex; gap: clamp(6px,2vw,10px); }
+
 .reel-window {
-  flex: 1; height: 240px;
+  flex: 1;
+  height: var(--win-h);    /* CSS 변수 → JS가 동적으로 읽음 */
   overflow: hidden; position: relative;
-  border-radius: 12px;
+  border-radius: clamp(8px,2vw,12px);
   background: var(--white);
-  border: 2px solid var(--gray-200);
+  border: 2px solid var(--g200);
 }
-/* 중앙 하이라이트 (80px~160px = 가운데 80px 구간) */
+/* 중앙 하이라이트 — item-h 기준으로 top/height 계산 */
 .reel-window::before {
   content: ''; position: absolute;
-  top: 80px; left: 0; right: 0; height: 80px;
+  top: var(--item-h); left: 0; right: 0;
+  height: var(--item-h);
   background: var(--orange-pale);
   border-top: 2px solid var(--orange-mid);
   border-bottom: 2px solid var(--orange-mid);
   z-index: 1; pointer-events: none;
 }
-/* 위아래 페이드 — 양 끝 10%만 */
+/* 위아래 페이드 */
 .reel-window::after {
   content: ''; position: absolute; inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(255,255,255,1)    0%,
+    rgba(255,255,255,.96) 0%,
     rgba(255,255,255,0)   22%,
     rgba(255,255,255,0)   78%,
-    rgba(255,255,255,1)  100%
+    rgba(255,255,255,.96) 100%
   );
   z-index: 3; pointer-events: none;
 }
 .reel-strip {
   position: absolute; left: 0; right: 0; top: 0;
   display: flex; flex-direction: column;
-  will-change: transform;
-  z-index: 2; /* 하이라이트(1) 위, 페이드(3) 아래 */
+  will-change: transform; z-index: 2;
 }
 .reel-item {
-  height: 80px; flex-shrink: 0;
+  height: var(--item-h); flex-shrink: 0;
   display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 4px;
+  align-items: center; justify-content: center; gap: 3px;
 }
-.r-emoji { font-size: 28px; line-height: 1; }
+.r-emoji { font-size: clamp(20px,5.5vw,26px); line-height: 1; }
 .r-name  {
-  font-size: 12px; font-weight: 700; color: var(--gray-800);
+  font-size: clamp(10px,2.8vw,12px); font-weight: 700; color: var(--g800);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   max-width: 90%; text-align: center;
 }
-.reel-sep { width: 2px; background: var(--gray-200); border-radius: 2px; align-self: stretch; }
+.reel-sep { width: 2px; background: var(--g200); border-radius: 2px; align-self: stretch; }
 
 /* SPIN 버튼 */
-.lever-area { display: flex; justify-content: center; margin-top: 14px; }
+.lever-area { display: flex; justify-content: center; margin-top: clamp(8px,2vh,14px); }
 .lever-btn {
-  background: var(--orange); border: none; border-radius: 12px;
-  padding: 13px 48px; color: #fff;
-  font-family: 'Jua', sans-serif; font-size: 17px; letter-spacing: 2px;
+  background: var(--orange); border: none;
+  border-radius: clamp(9px,2.5vw,12px);
+  padding: clamp(10px,2.5vh,13px) clamp(28px,8vw,48px);
+  color: #fff; font-family: 'Jua', sans-serif;
+  font-size: clamp(14px,4vw,17px); letter-spacing: 2px;
   cursor: pointer;
   box-shadow: 0 4px 0 var(--orange-dark), 0 6px 20px rgba(255,87,34,.35);
   transition: background .15s, transform .1s, box-shadow .1s;
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 6px;
+  -webkit-tap-highlight-color: transparent;
 }
-.lever-btn:hover:not(:disabled)  { background: var(--orange-dark); }
 .lever-btn:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0 0 var(--orange-dark); }
-.lever-btn:disabled { background: var(--gray-400); box-shadow: none; cursor: not-allowed; }
+.lever-btn:disabled { background: var(--g400); box-shadow: none; cursor: not-allowed; }
 
 /* 결과 카드 */
 .result-card {
-  width: 100%; background: var(--orange-pale);
-  border: 2px solid var(--orange-mid); border-radius: var(--r-lg);
-  padding: 22px 20px;
-  display: none; flex-direction: column; align-items: center; gap: 6px;
+  flex-shrink: 0;
+  background: var(--orange-pale); border: 2px solid var(--orange-mid);
+  border-radius: var(--r-lg);
+  padding: clamp(14px,3.5vh,22px) clamp(12px,4vw,20px);
+  display: none; flex-direction: column; align-items: center;
+  gap: clamp(4px,1vh,6px);
 }
 .result-card.visible { display: flex; animation: popUp .4s cubic-bezier(.34,1.56,.64,1); }
 @keyframes popUp { from{transform:scale(.9);opacity:0} to{transform:scale(1);opacity:1} }
-.result-eyebrow { font-size: 11px; font-weight: 700; color: var(--orange); letter-spacing: 2px; }
-.result-food { font-family:'Jua',sans-serif; font-size: 36px; color: var(--text); letter-spacing:-1px; text-align:center; }
-.result-cat  {
-  font-size: 13px; color: var(--gray-600); font-weight: 500;
-  background: var(--white); padding: 4px 14px; border-radius: 100px;
+.result-eyebrow {
+  font-size: clamp(9px,2.5vw,11px); font-weight: 700;
+  color: var(--orange); letter-spacing: 2px;
+}
+.result-food {
+  font-family: 'Jua', sans-serif;
+  font-size: clamp(26px,7.5vw,36px);
+  color: var(--text); letter-spacing: -1px; text-align: center;
+}
+.result-cat {
+  font-size: clamp(11px,3vw,13px); color: var(--g600); font-weight: 500;
+  background: var(--white); padding: 3px 12px; border-radius: 100px;
   border: 1.5px solid var(--orange-mid);
 }
 
 /* 액션 버튼 */
-.action-area { width: 100%; display: none; flex-direction: column; gap: 8px; }
+.action-area {
+  flex-shrink: 0;
+  display: none; flex-direction: column; gap: clamp(6px,1.5vh,8px);
+}
 .action-area.visible { display: flex; }
-.action-row { display: flex; gap: 8px; }
+.action-row { display: flex; gap: clamp(6px,2vw,8px); }
 .btn-action {
   flex: 1; border: none; border-radius: var(--r-sm);
-  padding: 14px 10px; font-size: 14px; font-weight: 700;
+  padding: clamp(12px,3vh,14px) 8px;
+  font-size: clamp(12px,3.5vw,14px); font-weight: 700;
   cursor: pointer; transition: all .15s;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
   font-family: 'Noto Sans KR', sans-serif; white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
 }
 .btn-again { background: var(--orange); color: #fff; box-shadow: 0 3px 12px rgba(255,87,34,.3); }
-.btn-again:hover { background: var(--orange-dark); transform: translateY(-1px); }
-.btn-share { background: var(--white); color: var(--text); border: 2px solid var(--gray-200); }
-.btn-share:hover { border-color: var(--orange); color: var(--orange); transform: translateY(-1px); }
+.btn-again:active { background: var(--orange-dark); transform: scale(.97); }
+.btn-share { background: var(--white); color: var(--text); border: 2px solid var(--g200); }
+.btn-share:active { border-color: var(--orange); color: var(--orange); transform: scale(.97); }
 .btn-who-slot {
-  width: 100%; background: var(--white); border: 2px solid var(--gray-200);
-  color: var(--gray-600); font-size: 13px; font-weight: 700;
-  padding: 13px; border-radius: var(--r-sm);
+  width: 100%; background: var(--white); border: 2px solid var(--g200);
+  color: var(--g600); font-size: clamp(11px,3vw,13px); font-weight: 700;
+  padding: clamp(11px,2.8vh,13px) 0; border-radius: var(--r-sm);
   cursor: pointer; transition: all .15s;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
   font-family: 'Noto Sans KR', sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
-.btn-who-slot:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+.btn-who-slot:active { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
 
-/* ── TOAST ── */
+/* ══ TOAST ══ */
 .toast {
-  position: fixed; bottom: 32px; left: 50%;
+  position: fixed; bottom: clamp(20px,5vh,32px); left: 50%;
   transform: translateX(-50%) translateY(60px);
   background: #1A1A1A; color: #fff;
-  padding: 12px 24px; border-radius: 100px;
-  font-size: 14px; font-weight: 700; white-space: nowrap;
-  opacity: 0; transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .25s;
+  padding: clamp(10px,2.5vh,12px) clamp(18px,5vw,24px);
+  border-radius: 100px; font-size: clamp(12px,3.5vw,14px); font-weight: 700;
+  white-space: nowrap; opacity: 0;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .25s;
   z-index: 999; box-shadow: 0 6px 24px rgba(0,0,0,.3); pointer-events: none;
 }
 .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-/* ── POPUP (bottom sheet) ── */
+/* ══ POPUP (bottom sheet) ══ */
 .popup-overlay {
   display: none; position: fixed; inset: 0;
   background: rgba(0,0,0,.5); z-index: 100;
@@ -337,41 +404,53 @@ body {
 .popup-overlay.show { display: flex; }
 .popup-card {
   background: var(--white); border-radius: 24px 24px 0 0;
-  padding: 8px 24px 44px; width: 100%; max-width: 430px;
-  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  padding: 8px clamp(16px,5vw,24px) clamp(28px,7vh,44px);
+  width: 100%; max-width: 480px;
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(8px,2vh,12px);
   animation: slideUp .35s cubic-bezier(.34,1.2,.64,1);
+  max-height: 90vh; max-height: 90dvh;
+  overflow-y: auto;
 }
 @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-.popup-handle { width: 40px; height: 4px; background: var(--gray-200); border-radius: 2px; margin-bottom: 4px; }
-.popup-emoji  { font-size: 48px; }
-.popup-title  { font-family:'Jua',sans-serif; font-size: 20px; color: var(--text); text-align: center; line-height: 1.5; }
-.popup-desc   { font-size: 14px; color: var(--gray-600); text-align: center; line-height: 1.8; }
+.popup-handle { width: 40px; height: 4px; background: var(--g200); border-radius: 2px; margin-bottom: 4px; }
+.popup-emoji  { font-size: clamp(36px,10vw,48px); }
+.popup-title  {
+  font-family: 'Jua', sans-serif; font-size: clamp(17px,5vw,20px);
+  color: var(--text); text-align: center; line-height: 1.5;
+}
+.popup-desc {
+  font-size: clamp(12px,3.5vw,14px); color: var(--g600);
+  text-align: center; line-height: 1.8;
+}
 .popup-desc b { color: var(--text); }
 .popup-link-btn {
   display: flex; align-items: center; justify-content: center; gap: 6px;
   background: var(--orange); color: #fff;
-  font-family: 'Jua', sans-serif; font-size: 16px;
-  text-decoration: none; padding: 16px; border-radius: var(--r-md);
-  width: 100%; transition: background .15s;
+  font-family: 'Jua', sans-serif; font-size: clamp(14px,4vw,16px);
+  text-decoration: none;
+  padding: clamp(13px,3.2vh,16px) 0;
+  border-radius: var(--r-md); width: 100%;
   box-shadow: 0 4px 16px rgba(255,87,34,.35); margin-top: 4px;
+  -webkit-tap-highlight-color: transparent;
 }
-.popup-link-btn:hover { background: var(--orange-dark); }
+.popup-link-btn:active { background: var(--orange-dark); }
 .popup-close {
-  background: none; border: 1.5px solid var(--gray-200);
-  color: var(--gray-600); font-size: 14px; font-weight: 700;
-  padding: 13px; border-radius: var(--r-md);
+  background: none; border: 1.5px solid var(--g200);
+  color: var(--g600); font-size: clamp(12px,3.5vw,14px); font-weight: 700;
+  padding: clamp(11px,2.8vh,13px) 0; border-radius: var(--r-md);
   cursor: pointer; width: 100%; transition: all .15s;
   font-family: 'Noto Sans KR', sans-serif;
 }
-.popup-close:hover { border-color: var(--orange); color: var(--orange); }
+.popup-close:active { border-color: var(--orange); color: var(--orange); }
 
-/* ── CONFETTI ── */
+/* ══ CONFETTI ══ */
 .confetti-piece {
   position: fixed; pointer-events: none; z-index: 50;
   border-radius: 2px; animation: confettiFall linear forwards;
 }
 @keyframes confettiFall {
-  0%   { transform: translateY(-20px) rotate(0deg);   opacity: 1; }
+  0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
   100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
 }
 </style>
@@ -388,7 +467,7 @@ body {
   </div>
   <div class="landing-cta">
     <p class="landing-cta-hint">🎰 슬롯을 돌려서 메뉴를 추천받아요</p>
-    <button class="btn-cta" onclick="goTo('filter')">점메추 시작하기</button>
+    <button class="btn-primary" onclick="goTo('filter')">점메추 시작하기</button>
     <button class="btn-ghost" onclick="showWho()">👤 만든 사람은 누구?</button>
   </div>
 </div>
@@ -409,10 +488,10 @@ body {
       <div class="section-label" style="margin-bottom:8px">포함된 카테고리</div>
       <div class="tag-area" id="active-list"></div>
     </div>
-    <div style="height:4px"></div>
+    <div style="height:2px"></div>
   </div>
   <div class="filter-footer">
-    <button class="btn-spin" id="btn-spin" onclick="startSpin()">🎰 슬롯 돌리기!</button>
+    <button class="btn-primary" id="btn-spin" onclick="startSpin()">🎰 슬롯 돌리기!</button>
   </div>
 </div>
 
@@ -422,8 +501,7 @@ body {
     <button class="back-btn" id="back-slot" onclick="goTo('filter')">←</button>
     <span class="top-bar-title">오늘의 점메추</span>
   </div>
-  <div class="slot-scroll">
-
+  <div class="slot-body">
     <div class="slot-machine">
       <div class="slot-dots">
         <div class="dot dot-r"></div>
@@ -431,9 +509,7 @@ body {
         <div class="dot dot-g"></div>
         <span class="slot-dots-label">LUNCH SLOT</span>
       </div>
-      <div class="reels-wrap" id="reels-wrap">
-        <!-- JS로 생성 -->
-      </div>
+      <div class="reels-wrap" id="reels-wrap"></div>
       <div class="lever-area">
         <button class="lever-btn" id="lever-btn" onclick="spinSlot()">🎰 SPIN</button>
       </div>
@@ -452,7 +528,6 @@ body {
       </div>
       <button class="btn-who-slot" onclick="showWho()">👤 만든 사람은 누구?</button>
     </div>
-
   </div>
 </div>
 
@@ -479,9 +554,7 @@ body {
 </div>
 
 <script>
-/* ══════════════════════
-   DATA
-══════════════════════ */
+/* ══ DATA ══ */
 const CATEGORIES = [
   { id:'korean',   name:'한식',      emoji:'🍚', foods:[
     {name:'삼겹살',    emoji:'🥓'}, {name:'김치찌개',  emoji:'🍲'},
@@ -532,23 +605,24 @@ const CATEGORIES = [
   ]},
 ];
 
-/* ══════════════════════
-   슬롯 상수
-   ITEM_H  = .reel-item 의 height (px)
-   WIN_H   = .reel-window 의 height (px)
-   PRE     = winner 앞에 쌓는 랜덤 아이템 수
-   
-   translateY 공식:
-     스트립 시작: translateY(0)  → 첫 아이템 상단이 윈도우 상단
-     winner 중앙 정렬:
-       winner 아이템 상단 y = winnerIdx * ITEM_H
-       중앙 오프셋 = WIN_H/2 - ITEM_H/2
-       → translateY = -(winnerIdx * ITEM_H) + (WIN_H/2 - ITEM_H/2)
-══════════════════════ */
-const ITEM_H = 80;   // CSS .reel-item height
-const WIN_H  = 240;  // CSS .reel-window height
-const PRE    = 25;   // 랜덤 아이템 수 (충분히 길게)
+/* ══ 슬롯 상수 — CSS 변수를 JS에서 동적으로 읽음 ══ */
+const PRE    = 25;
 const REEL_N = 3;
+
+/* CSS --item-h 값을 px로 읽어오는 함수 */
+function getCSSPx(varName) {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  // clamp 값은 실제 계산값이 element에 반영됨 → reel-item에서 읽기
+  return 0; // 아래 getReelDims로 대체
+}
+
+/* 실제 렌더된 릴 치수를 DOM에서 읽음 */
+function getReelDims() {
+  const win = document.querySelector('.reel-window');
+  const item = document.querySelector('.reel-item');
+  if (!win || !item) return { winH: 240, itemH: 80 };
+  return { winH: win.clientHeight, itemH: item.clientHeight };
+}
 
 let excluded = new Set();
 let spinning  = false;
@@ -583,30 +657,16 @@ function renderFilter() {
 }
 
 function startSpin() {
-  if (CATEGORIES.filter(c => !excluded.has(c.id)).length === 0) return;
+  if (!CATEGORIES.filter(c => !excluded.has(c.id)).length) return;
   goTo('slot');
 }
 
 function getActiveFoods() {
   return CATEGORIES.filter(c => !excluded.has(c.id))
-    .flatMap(c => c.foods.map(f => ({...f, catId:c.id})));
+    .flatMap(c => c.foods.map(f => ({...f, catId: c.id})));
 }
 
 /* ══ Slot Init ══ */
-function buildStrip(foods) {
-  // PRE개 랜덤 + winner 1개
-  const items = [];
-  for (let i = 0; i < PRE; i++) items.push(foods[Math.floor(Math.random() * foods.length)]);
-  items.push(winner);
-  return items;
-}
-
-function renderStrip(strip) {
-  return strip.map(f =>
-    `<div class="reel-item"><div class="r-emoji">${f.emoji}</div><div class="r-name">${f.name}</div></div>`
-  ).join('');
-}
-
 function initSlot() {
   const wrap = document.getElementById('reels-wrap');
   wrap.innerHTML = '';
@@ -615,17 +675,23 @@ function initSlot() {
       const sep = document.createElement('div');
       sep.className = 'reel-sep'; wrap.appendChild(sep);
     }
-    const win = document.createElement('div');
-    win.className = 'reel-window'; win.id = 'rw-' + i;
-    const strip = document.createElement('div');
-    strip.className = 'reel-strip'; strip.id = 'rs-' + i;
-    win.appendChild(strip);
-    wrap.appendChild(win);
+    const rw = document.createElement('div');
+    rw.className = 'reel-window'; rw.id = 'rw-' + i;
+    const rs = document.createElement('div');
+    rs.className = 'reel-strip'; rs.id = 'rs-' + i;
+    rw.appendChild(rs); wrap.appendChild(rw);
   }
   document.getElementById('result-card').classList.remove('visible');
   document.getElementById('action-area').classList.remove('visible');
   winner = null;
-  spinSlot();
+  // 더미 아이템 하나 렌더해서 itemH 측정 가능하게
+  const foods = getActiveFoods();
+  if (foods.length) {
+    const dummy = foods[0];
+    document.getElementById('rs-0').innerHTML =
+      `<div class="reel-item"><div class="r-emoji">${dummy.emoji}</div><div class="r-name">${dummy.name}</div></div>`;
+  }
+  setTimeout(spinSlot, 50); // 레이아웃 확정 후 스핀
 }
 
 /* ══ Spin ══ */
@@ -641,52 +707,60 @@ function spinSlot() {
 
   winner = foods[Math.floor(Math.random() * foods.length)];
 
-  // 각 릴: 스트립 렌더 → 즉시 맨 위(0)로 → rAF×2 후 winner 위치로 이동
-  const durs   = [1300, 1800, 2300]; // 릴별 애니메이션 시간
-  const delays = [0,    180,  360 ]; // 릴별 시작 딜레이
+  /* DOM에서 실제 치수 읽기 */
+  const { winH, itemH } = getReelDims();
+  /* winner 중앙 정렬:
+     strip 시작 = translateY(0) = 첫 아이템 상단이 window 상단
+     winner index = PRE (마지막)
+     winner 상단 y = PRE * itemH
+     중앙 오프셋  = winH/2 - itemH/2
+     translateY   = -(PRE * itemH) + (winH/2 - itemH/2)          */
+  const centerOff = winH / 2 - itemH / 2;
+
+  const durs   = [1300, 1800, 2300];
+  const delays = [0,    180,  360];
 
   for (let i = 0; i < REEL_N; i++) {
-    const strip  = document.getElementById('rs-' + i);
-    const items  = buildStrip(foods);
-    strip.innerHTML = renderStrip(items);
+    const rs = document.getElementById('rs-' + i);
 
-    // winner는 마지막 인덱스
-    const winIdx = items.length - 1; // = PRE
-    // winner 아이템 중앙 정렬:
-    //   아이템 상단 위치 = winIdx * ITEM_H
-    //   윈도우 중앙 오프셋 = WIN_H/2 - ITEM_H/2
-    //   translateY = -(winIdx * ITEM_H) + (WIN_H/2 - ITEM_H/2)
-    const target = -(winIdx * ITEM_H) + (WIN_H / 2 - ITEM_H / 2);
+    // 스트립 렌더
+    const items = [];
+    for (let j = 0; j < PRE; j++) items.push(foods[Math.floor(Math.random() * foods.length)]);
+    items.push(winner);
+    rs.innerHTML = items.map(f =>
+      `<div class="reel-item"><div class="r-emoji">${f.emoji}</div><div class="r-name">${f.name}</div></div>`
+    ).join('');
 
-    // 즉시 초기화 (transition 없이)
-    strip.style.transition = 'none';
-    strip.style.transform  = 'translateY(0px)';
+    const target = -(PRE * itemH) + centerOff;
 
-    // rAF 두 번 → 브라우저가 초기 상태를 완전히 페인트한 뒤 애니메이션
-    ;(function(s, t, dur, del) {
+    // 초기화
+    rs.style.transition = 'none';
+    rs.style.transform  = 'translateY(0px)';
+
+    // rAF × 2 → 브라우저가 0px 완전 페인트 후 애니메이션
+    ;(function(el, t, dur, del) {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setTimeout(() => {
-            s.style.transition = `transform ${dur}ms cubic-bezier(0.23,1,0.32,1)`;
-            s.style.transform  = `translateY(${t}px)`;
+            el.style.transition = `transform ${dur}ms cubic-bezier(0.23,1,0.32,1)`;
+            el.style.transform  = `translateY(${t}px)`;
           }, del);
         });
       });
-    })(strip, target, durs[i], delays[i]);
+    })(rs, target, durs[i], delays[i]);
   }
-
-  // 마지막 릴 완료 시점에 결과 표시
-  const totalMs = delays[REEL_N-1] + durs[REEL_N-1] + 200;
 
   // 릴별 멈출 때 글로우
   durs.forEach((dur, i) => {
     setTimeout(() => {
       const rw = document.getElementById('rw-' + i);
-      rw.style.boxShadow = '0 0 0 2.5px var(--orange), 0 0 16px rgba(255,87,34,.35)';
-      setTimeout(() => { rw.style.boxShadow = ''; }, 600);
+      rw.style.transition = 'box-shadow .2s';
+      rw.style.boxShadow  = '0 0 0 2.5px var(--orange), 0 0 14px rgba(255,87,34,.35)';
+      setTimeout(() => { rw.style.boxShadow = ''; rw.style.transition = ''; }, 600);
     }, delays[i] + dur + 50);
   });
 
+  const totalMs = delays[REEL_N-1] + durs[REEL_N-1] + 250;
   setTimeout(() => {
     spinning = false;
     document.getElementById('lever-btn').disabled = false;
@@ -738,11 +812,10 @@ function showToast(msg) {
 }
 
 /* ══ Popup ══ */
-function showWho()  { document.getElementById('popup').classList.add('show'); }
+function showWho()   { document.getElementById('popup').classList.add('show'); }
 function closePopup(){ document.getElementById('popup').classList.remove('show'); }
 function handlePopupBg(e){ if(e.target===document.getElementById('popup')) closePopup(); }
 
-// 초기화
 renderFilter();
 </script>
 </body>
