@@ -796,14 +796,31 @@ function launchConfetti() {
 
 /* ══ Share ══ */
 function shareLink() {
-  const url = location.href;
+  if (!winner) {
+    showToast('먼저 슬롯을 돌려주세요!');
+    return;
+  }
+  const cat = CATEGORIES.find(c => c.id === winner.catId);
+  const catName = cat ? cat.name : '';
+  const text = `🎰 오늘 점심은 "${winner.emoji} ${winner.name}" (${catName})!\n점메추가 골라줬어요 👇`;
+  const url  = location.href;
+
+  // 모바일 네이티브 공유 시트 (iOS/Android)
+  if (navigator.share) {
+    navigator.share({ title: '점메추 🍱', text, url })
+      .catch(() => {}); // 사용자가 취소해도 에러 무시
+    return;
+  }
+
+  // fallback: 텍스트 + URL 클립보드 복사
+  const full = `${text}\n${url}`;
   if (navigator.clipboard) {
-    navigator.clipboard.writeText(url).then(() => showToast('🔗 링크가 복사되었습니다!'));
+    navigator.clipboard.writeText(full).then(() => showToast('📋 결과가 복사되었습니다!'));
   } else {
     const ta = document.createElement('textarea');
-    ta.value = url; document.body.appendChild(ta);
+    ta.value = full; document.body.appendChild(ta);
     ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
-    showToast('🔗 링크가 복사되었습니다!');
+    showToast('📋 결과가 복사되었습니다!');
   }
 }
 
