@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>점메추 🍱</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════
+   TOKENS
+════════════════════════════════ */
+:root {
+  --orange:       #FF5722;
+  --orange-dark:  #D84315;
+  --orange-pale:  #FFF3EE;
+  --orange-mid:   #FFCCBC;
+  --white:        #FFFFFF;
+  --bg:           #FAFAFA;
+  --gray-100:     #F5F5F5;
+  --gray-200:     #E8E8E8;
+  --gray-400:     #BDBDBD;
+  --gray-600:     #757575;
+  --gray-800:     #424242;
+  --gray-900:     #1A1A1A;
+  --text:         #1A1A1A;
+  --radius-sm:    10px;
+  --radius-md:    14px;
+  --radius-lg:    20px;
+}
+
+/* ════════════════════════════════
+   RESET & BASE
+════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ════════════════════════════════
+   APP SHELL
+════════════════════════════════ */
+#app {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 40px rgba(0,0,0,.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ════════════════════════════════
+   SCREENS
+════════════════════════════════ */
+.screen { display: none; flex-direction: column; flex: 1; }
+.screen.active { display: flex; }
+
+/* ════════════════════════════════
+   TOP BAR (filter & slot screens)
+════════════════════════════════ */
+.top-bar {
+  background: var(--orange);
+  padding: 0 20px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+}
+.top-bar-title {
+  font-family: 'Jua', sans-serif;
+  font-size: 18px;
+  color: var(--white);
+  letter-spacing: 1px;
+}
+.back-btn {
+  position: absolute;
+  left: 12px;
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,.15);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+  line-height: 1;
+}
+.back-btn:hover { background: rgba(255,255,255,.25); }
+
+/* ════════════════════════════════
+   ── SCREEN 1: LANDING ──
+════════════════════════════════ */
+#screen-landing {
+  background: var(--orange);
+  justify-content: space-between;
+}
+
+/* Hero: 전체 화면을 오렌지로 채우고 중앙 정렬 */
+.landing-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px 32px;
+  gap: 12px;
+}
+.hero-icon {
+  font-size: 80px;
+  line-height: 1;
+  animation: float 3.5s ease-in-out infinite;
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,.2));
+}
+@keyframes float {
+  0%,100% { transform: translateY(0) rotate(-3deg); }
+  50%      { transform: translateY(-14px) rotate(3deg); }
+}
+.hero-title {
+  font-family: 'Jua', sans-serif;
+  font-size: 56px;
+  color: var(--white);
+  letter-spacing: -2px;
+  line-height: 1;
+  text-shadow: 0 4px 12px rgba(0,0,0,.2);
+}
+.hero-badge {
+  background: rgba(255,255,255,.2);
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 100px;
+  letter-spacing: .5px;
+}
+
+/* CTA 영역: 하단 흰색 카드처럼 */
+.landing-cta {
+  background: var(--white);
+  border-radius: 28px 28px 0 0;
+  padding: 28px 24px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 -4px 24px rgba(0,0,0,.08);
+}
+.landing-cta-hint {
+  font-size: 13px;
+  color: var(--gray-600);
+  font-weight: 500;
+  text-align: center;
+}
+
+/* 메인 CTA 버튼 */
+.btn-cta {
+  background: var(--orange);
+  color: var(--white);
+  font-family: 'Jua', sans-serif;
+  font-size: 20px;
+  letter-spacing: 1.5px;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 18px;
+  width: 100%;
+  cursor: pointer;
+  transition: background .15s, transform .1s, box-shadow .15s;
+  box-shadow: 0 4px 20px rgba(255,87,34,.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-cta:hover  { background: var(--orange-dark); box-shadow: 0 6px 24px rgba(255,87,34,.5); transform: translateY(-1px); }
+.btn-cta:active { transform: translateY(1px); box-shadow: 0 2px 12px rgba(255,87,34,.3); }
+
+/* 보조 버튼 (만든 사람은?) */
+.btn-ghost {
+  background: none;
+  border: 1.5px solid var(--gray-200);
+  color: var(--gray-600);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  padding: 14px;
+  width: 100%;
+  cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-ghost:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+
+/* ════════════════════════════════
+   ── SCREEN 2: FILTER ──
+════════════════════════════════ */
+#screen-filter { background: var(--white); }
+
+.filter-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 섹션 헤더 */
+.section-head { display: flex; flex-direction: column; gap: 2px; }
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gray-400);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.section-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* 카테고리 그리드: 3열 */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.cat-btn {
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 16px 8px 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: all .18s;
+  position: relative;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.cat-btn .cat-emoji { font-size: 28px; line-height: 1; }
+.cat-btn .cat-name  { font-size: 13px; font-weight: 700; color: var(--text); }
+
+/* 포함 상태 (기본) */
+.cat-btn:hover { border-color: var(--orange); background: var(--orange-pale); }
+
+/* 제외 상태 */
+.cat-btn.excluded {
+  background: var(--gray-100);
+  border-color: var(--gray-200);
+  opacity: .55;
+}
+.cat-btn.excluded .cat-name { color: var(--gray-600); text-decoration: line-through; }
+.cat-btn.excluded .cat-emoji { filter: grayscale(1); }
+
+/* 제외 뱃지 */
+.cat-btn.excluded::after {
+  content: '✕';
+  position: absolute;
+  top: 6px; right: 8px;
+  font-size: 11px;
+  font-weight: 900;
+  color: var(--gray-400);
+}
+
+/* 포함 태그 영역 */
+.tag-area {
+  background: var(--orange-pale);
+  border: 1.5px solid var(--orange-mid);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 52px;
+  align-items: center;
+}
+.active-tag {
+  background: var(--orange);
+  color: var(--white);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 100px;
+}
+.tag-empty { font-size: 13px; color: var(--orange); font-weight: 700; }
+
+/* 하단 고정 CTA */
+.filter-footer {
+  padding: 16px 20px 28px;
+  background: var(--white);
+  border-top: 1px solid var(--gray-100);
+  flex-shrink: 0;
+}
+.btn-spin {
+  background: var(--orange);
+  color: var(--white);
+  font-family: 'Jua', sans-serif;
+  font-size: 19px;
+  letter-spacing: 1.5px;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 18px;
+  width: 100%;
+  cursor: pointer;
+  transition: background .15s, transform .1s, box-shadow .15s;
+  box-shadow: 0 4px 20px rgba(255,87,34,.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-spin:hover    { background: var(--orange-dark); transform: translateY(-1px); }
+.btn-spin:active   { transform: translateY(1px); }
+.btn-spin:disabled { background: var(--gray-400); box-shadow: none; cursor: not-allowed; transform: none; }
+
+/* ════════════════════════════════
+   ── SCREEN 3: SLOT ──
+════════════════════════════════ */
+#screen-slot { background: var(--white); }
+
+.slot-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* 슬롯 머신 박스 — 밝은 테마 */
+.slot-machine {
+  width: 100%;
+  background: var(--gray-100);
+  border-radius: var(--radius-lg);
+  padding: 20px 18px 18px;
+  border: 2px solid var(--gray-200);
+  box-shadow: 0 4px 20px rgba(0,0,0,.07);
+  position: relative;
+  overflow: hidden;
+}
+/* 상단 오렌지 포인트 라인 */
+.slot-machine::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--orange), #FF8A65, var(--orange));
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+/* Mac-style traffic lights */
+.slot-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot-r { background: #FF5F57; }
+.dot-y { background: #FFBD2E; }
+.dot-g { background: #28CA41; }
+.slot-dots-label {
+  margin-left: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gray-400);
+  letter-spacing: 3px;
+}
+
+/* 릴 영역 */
+.reels-wrap {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.reel-outer {
+  flex: 1;
+  position: relative;
+  height: 152px;
+  background: var(--white);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid var(--gray-200);
+  box-shadow: inset 0 2px 8px rgba(0,0,0,.06);
+}
+/* 중앙 선택 영역 하이라이트 */
+.reel-outer::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 0; right: 0;
+  transform: translateY(-50%);
+  height: 58px;
+  background: var(--orange-pale);
+  border-top:    2px solid var(--orange-mid);
+  border-bottom: 2px solid var(--orange-mid);
+  z-index: 2;
+  pointer-events: none;
+}
+/* 위아래 흰색 페이드 */
+.reel-outer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,.92) 0%,
+    transparent 28%,
+    transparent 72%,
+    rgba(255,255,255,.92) 100%
+  );
+  z-index: 3;
+  pointer-events: none;
+}
+
+.reel-inner {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+}
+.reel-item {
+  height: 58px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.r-emoji { font-size: 26px; line-height: 1; }
+.r-name  {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-800);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 88%;
+  text-align: center;
+}
+
+.reel-sep { width: 2px; background: var(--gray-200); border-radius: 2px; align-self: stretch; }
+
+/* SPIN 버튼 */
+.lever-area {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+.lever-btn {
+  background: var(--orange);
+  border: none;
+  border-radius: 12px;
+  padding: 13px 48px;
+  color: var(--white);
+  font-family: 'Jua', sans-serif;
+  font-size: 17px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background .15s, transform .1s, box-shadow .1s;
+  box-shadow: 0 4px 0 var(--orange-dark), 0 6px 20px rgba(255,87,34,.35);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lever-btn:hover:not(:disabled)  { background: var(--orange-dark); }
+.lever-btn:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0 0 var(--orange-dark); }
+.lever-btn:disabled { background: var(--gray-400); box-shadow: none; cursor: not-allowed; color: var(--white); }
+
+/* 결과 카드 */
+.result-card {
+  width: 100%;
+  background: var(--orange-pale);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--orange-mid);
+  padding: 22px 20px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.result-card.visible { display: flex; animation: popUp .4s cubic-bezier(.34,1.56,.64,1); }
+@keyframes popUp {
+  from { transform: scale(.9); opacity: 0; }
+  to   { transform: scale(1);  opacity: 1; }
+}
+.result-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--orange);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.result-food {
+  font-family: 'Jua', sans-serif;
+  font-size: 36px;
+  color: var(--text);
+  letter-spacing: -1px;
+  line-height: 1.1;
+  text-align: center;
+}
+.result-cat {
+  font-size: 13px;
+  color: var(--gray-600);
+  font-weight: 500;
+  background: var(--white);
+  padding: 4px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--orange-mid);
+}
+
+/* 액션 버튼 영역 */
+.action-area {
+  width: 100%;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
+.action-area.visible { display: flex; }
+
+.action-row { display: flex; gap: 8px; }
+
+.btn-action {
+  flex: 1;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 14px 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: 'Noto Sans KR', sans-serif;
+  white-space: nowrap;
+}
+.btn-again {
+  background: var(--orange);
+  color: var(--white);
+  box-shadow: 0 3px 12px rgba(255,87,34,.3);
+}
+.btn-again:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+.btn-share {
+  background: var(--white);
+  color: var(--text);
+  border: 2px solid var(--gray-200);
+}
+.btn-share:hover { border-color: var(--orange); color: var(--orange); transform: translateY(-1px); }
+
+.btn-who-slot {
+  width: 100%;
+  background: var(--white);
+  border: 2px solid var(--gray-200);
+  color: var(--gray-600);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 13px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.btn-who-slot:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+
+/* ════════════════════════════════
+   TOAST
+════════════════════════════════ */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  background: var(--gray-900);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .25s;
+  z-index: 999;
+  box-shadow: 0 6px 24px rgba(0,0,0,.3);
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* ════════════════════════════════
+   POPUP
+════════════════════════════════ */
+.popup-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  z-index: 100;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+}
+.popup-overlay.show { display: flex; }
+
+.popup-card {
+  background: var(--white);
+  border-radius: 24px 24px 0 0;
+  padding: 8px 24px 40px;
+  width: 100%;
+  max-width: 430px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  animation: slideUp .35s cubic-bezier(.34,1.2,.64,1);
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+/* 핸들 바 */
+.popup-handle {
+  width: 40px; height: 4px;
+  background: var(--gray-200);
+  border-radius: 2px;
+  margin-bottom: 4px;
+}
+.popup-emoji  { font-size: 48px; }
+.popup-title  { font-family: 'Jua', sans-serif; font-size: 20px; color: var(--text); text-align: center; line-height: 1.5; }
+.popup-desc   { font-size: 14px; color: var(--gray-600); text-align: center; line-height: 1.8; }
+.popup-desc b { color: var(--text); }
+
+.popup-link-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--orange);
+  color: var(--white);
+  font-family: 'Jua', sans-serif;
+  font-size: 16px;
+  text-decoration: none;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  width: 100%;
+  transition: background .15s;
+  box-shadow: 0 4px 16px rgba(255,87,34,.35);
+  margin-top: 4px;
+}
+.popup-link-btn:hover { background: var(--orange-dark); }
+
+.popup-close {
+  background: none;
+  border: 1.5px solid var(--gray-200);
+  color: var(--gray-600);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 13px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  width: 100%;
+  transition: all .15s;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.popup-close:hover { border-color: var(--orange); color: var(--orange); }
+
+/* ════════════════════════════════
+   CONFETTI
+════════════════════════════════ */
+.confetti-piece {
+  position: fixed;
+  pointer-events: none;
+  z-index: 50;
+  border-radius: 2px;
+  animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+  0%   { transform: translateY(-20px) rotate(0deg);   opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ══════════════════════════════
+       SCREEN 1: LANDING
+  ══════════════════════════════ -->
+  <div id="screen-landing" class="screen active">
+    <div class="landing-hero">
+      <div class="hero-icon">🍽️</div>
+      <div class="hero-title">점메추</div>
+      <div class="hero-badge">오늘 점심을 슬롯이 골라드릴게요!</div>
+    </div>
+    <div class="landing-cta">
+      <p class="landing-cta-hint">🎰 슬롯을 돌려서 메뉴를 추천받아요</p>
+      <button class="btn-cta" onclick="goTo('filter')">
+        점메추 시작하기
+      </button>
+      <button class="btn-ghost" onclick="showWho()">
+        👤 만든 사람은 누구?
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       SCREEN 2: FILTER
+  ══════════════════════════════ -->
+  <div id="screen-filter" class="screen">
+    <div class="top-bar">
+      <button class="back-btn" id="back-filter" onclick="goTo('landing')">←</button>
+      <span class="top-bar-title">카테고리 선택</span>
+    </div>
+    <div class="filter-scroll">
+      <div class="section-head">
+        <span class="section-label">Step 1</span>
+        <span class="section-title">제외할 카테고리를 눌러주세요</span>
+      </div>
+      <div class="category-grid" id="cat-grid"></div>
+      <div class="section-head">
+        <span class="section-label">포함된 카테고리</span>
+      </div>
+      <div class="tag-area" id="active-list"></div>
+      <!-- 스크롤 여유 공간 -->
+      <div style="height:4px"></div>
+    </div>
+    <div class="filter-footer">
+      <button class="btn-spin" id="btn-spin" onclick="startSpin()">
+        🎰 슬롯 돌리기!
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════
+       SCREEN 3: SLOT
+  ══════════════════════════════ -->
+  <div id="screen-slot" class="screen">
+    <div class="top-bar">
+      <button class="back-btn" id="back-slot" onclick="goTo('filter')">←</button>
+      <span class="top-bar-title">오늘의 점메추</span>
+    </div>
+    <div class="slot-scroll">
+
+      <!-- 슬롯 머신 -->
+      <div class="slot-machine">
+        <div class="slot-dots">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+          <span class="slot-dots-label">LUNCH SLOT</span>
+        </div>
+        <div class="reels-wrap" id="reels-wrap"></div>
+        <div class="lever-area">
+          <button class="lever-btn" id="lever-btn" onclick="spinSlot()">
+            🎰 SPIN
+          </button>
+        </div>
+      </div>
+
+      <!-- 결과 카드 -->
+      <div class="result-card" id="result-card">
+        <div class="result-eyebrow">오늘의 점심 추천</div>
+        <div class="result-food"  id="result-food"></div>
+        <div class="result-cat"   id="result-cat"></div>
+      </div>
+
+      <!-- 액션 버튼 -->
+      <div class="action-area" id="action-area">
+        <div class="action-row">
+          <button class="btn-action btn-again" onclick="spinSlot()">🎲 다시 돌리기</button>
+          <button class="btn-action btn-share" onclick="shareLink()">🔗 공유하기</button>
+        </div>
+        <button class="btn-who-slot" onclick="showWho()">👤 만든 사람은 누구?</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Popup (bottom sheet) -->
+<div class="popup-overlay" id="popup" onclick="handlePopupBg(event)">
+  <div class="popup-card">
+    <div class="popup-handle"></div>
+    <div class="popup-emoji">🍊</div>
+    <div class="popup-title">개혁신당 춘천시 라선거구<br>최태영 후보</div>
+    <div class="popup-desc">
+      춘천시 라선거구는 <b>3명을 뽑는</b> 기초의원 선거예요!<br>
+      1등만 당선되는 게 아니라<br>
+      <b>3등 안에만 들면 당선!</b> 🎉<br><br>
+      소중한 한 표, 최태영 후보에게 주시면<br>
+      충분히 당선될 수 있습니다 💪
+    </div>
+    <a class="popup-link-btn" href="https://litt.ly/taeyoung_choe" target="_blank" rel="noopener">
+      🔗 최태영 후보 더 알아보기
+    </a>
+    <button class="popup-close" onclick="closePopup()">닫기</button>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════
+   DATA
+════════════════════════════ */
+const CATEGORIES = [
+  { id:'korean',   name:'한식',      emoji:'🍚', foods:[
+    {name:'삼겹살',emoji:'🥓'}, {name:'김치찌개',emoji:'🍲'},
+    {name:'비빔밥',emoji:'🥗'}, {name:'된장찌개',emoji:'🍜'},
+    {name:'냉면',emoji:'🍝'},   {name:'불고기',emoji:'🥩'},
+    {name:'순두부찌개',emoji:'🫕'}, {name:'제육볶음',emoji:'🍖'},
+  ]},
+  { id:'chinese',  name:'중식',      emoji:'🥡', foods:[
+    {name:'짜장면',emoji:'🍜'}, {name:'짬뽕',emoji:'🍲'},
+    {name:'탕수육',emoji:'🍗'}, {name:'마라탕',emoji:'🌶️'},
+    {name:'볶음밥',emoji:'🍛'},
+  ]},
+  { id:'japanese', name:'일식',      emoji:'🍣', foods:[
+    {name:'초밥',emoji:'🍣'},   {name:'라멘',emoji:'🍜'},
+    {name:'우동',emoji:'🍝'},   {name:'돈카츠',emoji:'🍱'},
+    {name:'텐동',emoji:'🍚'},
+  ]},
+  { id:'western',  name:'양식',      emoji:'🍝', foods:[
+    {name:'파스타',emoji:'🍝'}, {name:'스테이크',emoji:'🥩'},
+    {name:'피자',emoji:'🍕'},   {name:'샐러드',emoji:'🥗'},
+    {name:'리조또',emoji:'🍚'},
+  ]},
+  { id:'snack',    name:'분식',      emoji:'🌮', foods:[
+    {name:'떡볶이',emoji:'🌶️'}, {name:'순대',emoji:'🍢'},
+    {name:'김밥',emoji:'🍙'},   {name:'라볶이',emoji:'🍜'},
+    {name:'튀김',emoji:'🍤'},
+  ]},
+  { id:'fast',     name:'패스트푸드', emoji:'🍔', foods:[
+    {name:'햄버거',emoji:'🍔'}, {name:'치킨',emoji:'🍗'},
+    {name:'핫도그',emoji:'🌭'}, {name:'샌드위치',emoji:'🥪'},
+  ]},
+];
+
+/* ════════════════════════════
+   STATE
+════════════════════════════ */
+let excluded = new Set();
+let spinning  = false;
+let winner    = null;
+const REEL_COUNT = 3;
+const ITEM_H     = 58;
+const REEL_H     = 152;
+const CENTER_OFF  = REEL_H / 2 - ITEM_H / 2; // 47
+
+/* ════════════════════════════
+   NAVIGATION
+════════════════════════════ */
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  document.getElementById('back-filter').style.display = id === 'filter' ? 'flex' : 'none';
+  document.getElementById('back-slot').style.display   = id === 'slot'   ? 'flex' : 'none';
+  if (id === 'filter') renderFilter();
+  if (id === 'slot')   initSlot();
+}
+
+/* ════════════════════════════
+   FILTER
+════════════════════════════ */
+function renderFilter() {
+  const grid = document.getElementById('cat-grid');
+  grid.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn' + (excluded.has(cat.id) ? ' excluded' : '');
+    btn.innerHTML = `<div class="cat-emoji">${cat.emoji}</div><div class="cat-name">${cat.name}</div>`;
+    btn.onclick = () => toggleCat(cat.id);
+    grid.appendChild(btn);
+  });
+
+  const activeEl = document.getElementById('active-list');
+  const active = CATEGORIES.filter(c => !excluded.has(c.id));
+  if (active.length === 0) {
+    activeEl.innerHTML = '<span class="tag-empty">최소 1개는 포함해야 해요!</span>';
+  } else {
+    activeEl.innerHTML = active.map(c =>
+      `<span class="active-tag">${c.emoji} ${c.name}</span>`
+    ).join('');
+  }
+  document.getElementById('btn-spin').disabled = active.length === 0;
+}
+
+function toggleCat(id) {
+  excluded.has(id) ? excluded.delete(id) : excluded.add(id);
+  renderFilter();
+}
+
+function startSpin() {
+  if (CATEGORIES.filter(c => !excluded.has(c.id)).length === 0) return;
+  goTo('slot');
+}
+
+/* ════════════════════════════
+   SLOT MACHINE
+════════════════════════════ */
+function getActiveFoods() {
+  return CATEGORIES.filter(c => !excluded.has(c.id))
+    .flatMap(c => c.foods.map(f => ({...f, catId:c.id, catName:c.name, catEmoji:c.emoji})));
+}
+
+function initSlot() {
+  const wrap = document.getElementById('reels-wrap');
+  wrap.innerHTML = '';
+  for (let i = 0; i < REEL_COUNT; i++) {
+    if (i > 0) {
+      const sep = document.createElement('div');
+      sep.className = 'reel-sep';
+      wrap.appendChild(sep);
+    }
+    const outer = document.createElement('div');
+    outer.className = 'reel-outer';
+    outer.id = 'reel-' + i;
+    const inner = document.createElement('div');
+    inner.className = 'reel-inner';
+    inner.id = 'ri-' + i;
+    outer.appendChild(inner);
+    wrap.appendChild(outer);
+  }
+  document.getElementById('result-card').classList.remove('visible');
+  document.getElementById('action-area').classList.remove('visible');
+  winner = null;
+  spinSlot();
+}
+
+function randItems(foods, n) {
+  return Array.from({length: n}, () => foods[Math.floor(Math.random() * foods.length)]);
+}
+
+function renderReel(inner, items) {
+  inner.innerHTML = items.map(f =>
+    `<div class="reel-item"><div class="r-emoji">${f.emoji}</div><div class="r-name">${f.name}</div></div>`
+  ).join('');
+}
+
+function spinSlot() {
+  if (spinning) return;
+  const foods = getActiveFoods();
+  if (!foods.length) return;
+
+  spinning = true;
+  document.getElementById('result-card').classList.remove('visible');
+  document.getElementById('action-area').classList.remove('visible');
+  document.getElementById('lever-btn').disabled = true;
+
+  // 3개 릴 모두 동일한 winner로 잭팟
+  winner = foods[Math.floor(Math.random() * foods.length)];
+
+  const durations = [1200, 1700, 2200];
+
+  for (let i = 0; i < REEL_COUNT; i++) {
+    const inner = document.getElementById('ri-' + i);
+    const items = [...randItems(foods, 30), winner];
+    renderReel(inner, items);
+    inner.style.transition = 'none';
+    inner.style.top = '0px';
+
+    const finalTop = -((items.length - 1) * ITEM_H) + CENTER_OFF;
+    const delay = i * 80 + 30;
+
+    setTimeout(() => {
+      inner.style.transition = `top ${durations[i]}ms cubic-bezier(0.17,0.84,0.44,1)`;
+      inner.style.top = finalTop + 'px';
+    }, delay);
+  }
+
+  // 릴 하나씩 멈출 때 글로우
+  durations.forEach((dur, i) => {
+    setTimeout(() => {
+      const reel = document.getElementById('reel-' + i);
+      reel.style.transition = 'box-shadow .25s';
+      reel.style.boxShadow = '0 0 0 2px #FF5722, 0 0 20px 4px rgba(255,87,34,.4)';
+      setTimeout(() => { reel.style.boxShadow = 'none'; reel.style.transition = ''; }, 700);
+    }, dur + i * 80 + 30 + 60);
+  });
+
+  const totalMs = durations[REEL_COUNT - 1] + (REEL_COUNT - 1) * 80 + 30;
+  setTimeout(() => {
+    spinning = false;
+    document.getElementById('lever-btn').disabled = false;
+
+    const cat = CATEGORIES.find(c => c.id === winner.catId);
+    document.getElementById('result-food').textContent = `${winner.emoji} ${winner.name}`;
+    document.getElementById('result-cat').textContent  = cat ? `${cat.emoji} ${cat.name}` : '';
+    document.getElementById('result-card').classList.add('visible');
+    document.getElementById('action-area').classList.add('visible');
+    launchConfetti();
+  }, totalMs + 200);
+}
+
+/* ════════════════════════════
+   CONFETTI
+════════════════════════════ */
+function launchConfetti() {
+  const colors = ['#FF5722','#FF8A65','#FFD166','#06D6A0','#64B5F6','#FFFFFF'];
+  for (let i = 0; i < 50; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = `
+      left:${Math.random()*100}vw; top:-10px;
+      width:${5+Math.random()*6}px; height:${9+Math.random()*10}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${1.3+Math.random()*1.5}s;
+      animation-delay:${Math.random()*0.5}s;
+    `;
+    document.body.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+
+/* ════════════════════════════
+   SHARE
+════════════════════════════ */
+function shareLink() {
+  const url = location.href;
+  (navigator.clipboard
+    ? navigator.clipboard.writeText(url)
+    : Promise.resolve((() => {
+        const ta = document.createElement('textarea');
+        ta.value = url; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+      })())
+  ).then ? navigator.clipboard.writeText(url).then(() => showToast('🔗 링크가 복사되었습니다!'))
+         : showToast('🔗 링크가 복사되었습니다!');
+}
+
+/* ════════════════════════════
+   TOAST
+════════════════════════════ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* ════════════════════════════
+   POPUP
+════════════════════════════ */
+function showWho() { document.getElementById('popup').classList.add('show'); }
+function closePopup() { document.getElementById('popup').classList.remove('show'); }
+function handlePopupBg(e) { if (e.target === document.getElementById('popup')) closePopup(); }
+
+/* share 보조 */
+function shareLink() {
+  const url = location.href;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => showToast('🔗 링크가 복사되었습니다!'));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('🔗 링크가 복사되었습니다!');
+  }
+}
+
+// 초기화
+renderFilter();
+</script>
+</body>
+</html>
